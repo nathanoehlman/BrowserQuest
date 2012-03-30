@@ -1,0 +1,18 @@
+{
+    "name": "Hostile Wilderness",
+    "description": "The creatures of the forest come out to attack in response to human incursion",
+    "orchestrations": [
+        {
+            "type": "daynightcycle",
+            "config": {
+                "enabled": true,
+                "day": 30000,
+                "night": 30000,
+                "messages": {
+                    "day": ["Dawn breaks, casting the darkness off into the abyss... for now...", "The red sun rises - blood has been spilled this night"],
+                    "night": ["A sudden chill quiets the world - night has fallen", "And with the blackening of the sun, evening has come"]
+                }
+            }
+        }
+    ]
+}

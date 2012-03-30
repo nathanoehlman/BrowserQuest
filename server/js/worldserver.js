@@ -2,6 +2,7 @@
 var cls = require("./lib/class"),
     _ = require("underscore"),
     Log = require('log'),
+    events = require('events'),
     Entity = require('./entity'),
     Character = require('./character'),
     Mob = require('./mob'),
@@ -41,6 +42,7 @@ module.exports = World = cls.Class.extend({
         this.mobAreas = [];
         this.chestAreas = [];
         this.groups = {};
+        this.events = new events.EventEmitter();
         
         this.outgoingQueues = {};
         
@@ -61,6 +63,8 @@ module.exports = World = cls.Class.extend({
         
         this.onPlayerEnter(function(player) {
             log.info(player.name + " has joined "+ self.id);
+            
+            self.events.emit('playerjoin', player);
             
             if(!player.hasEnteredGame) {
                 self.incrementPlayerCount();
@@ -852,5 +856,9 @@ module.exports = World = cls.Class.extend({
     
     updatePopulation: function(totalPlayers) {
         this.pushBroadcast(new Messages.Population(this.playerCount, totalPlayers ? totalPlayers : this.playerCount));
+    },
+    
+    getEvents: function() {
+        return this.events;
     }
 });

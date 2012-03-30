@@ -3,14 +3,16 @@ var fs = require('fs'),
     Metrics = require('./metrics');
 
 
-function main(config) {
+function main(config, orchestrationConfig) {
     var ws = require("./ws"),
         WorldServer = require("./worldserver"),
+        Orchestrator = require("./orchestrator"),
         Log = require('log'),
         _ = require('underscore'),
         server = new ws.MultiVersionWebsocketServer(config.port),
         metrics = config.metrics_enabled ? new Metrics(config) : null;
         worlds = [],
+        orchestrators = [],
         lastTotalPlayers = 0,
         checkPopulationInterval = setInterval(function() {
             if(metrics.isReady) {
@@ -79,6 +81,12 @@ function main(config) {
         world.run(config.map_filepath);
         worlds.push(world);
         
+        // Create the orchestration engine
+        if (orchestrationConfig) {
+            var orchestrator = new Orchestrator(world, orchestrationConfig);
+            orchestrators.push(orchestrator);
+        }
+        
         if(config.metrics_enabled) {
             world.onPlayerAdded(onPopulationChange);
             world.onPlayerRemoved(onPopulationChange);
@@ -121,7 +129,8 @@ function getConfigFile(path, callback) {
 }
 
 var defaultConfigPath = './server/config.json',
-    customConfigPath = './server/config_local.json';
+    customConfigPath = './server/config_local.json',
+    orchestrationConfigPath = './server/orchestration.json';
 
 process.argv.forEach(function (val, index, array) {
     if(index === 2) {
@@ -129,15 +138,18 @@ process.argv.forEach(function (val, index, array) {
     }
 });
 
-getConfigFile(defaultConfigPath, function(defaultConfig) {
-    getConfigFile(customConfigPath, function(localConfig) {
-        if(localConfig) {
-            main(localConfig);
-        } else if(defaultConfig) {
-            main(defaultConfig);
-        } else {
-            console.error("Server cannot start without any configuration file.");
-            process.exit(1);
-        }
-    });
+
+getConfigFile(orchestrationConfigPath, function(orchestrationConfig) {
+    getConfigFile(defaultConfigPath, function(defaultConfig) {
+        getConfigFile(customConfigPath, function(localConfig) {
+            if(localConfig) {
+                main(localConfig, orchestrationConfig);
+            } else if(defaultConfig) {
+                main(defaultConfig, orchestrationConfig);
+            } else {
+                console.error("Server cannot start without any configuration file.");
+                process.exit(1);
+            }
+        });
+    });    
 });

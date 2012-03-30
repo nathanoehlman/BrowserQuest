@@ -31,6 +31,7 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             this.handlers[Types.Messages.KILL] = this.receiveKill;
             this.handlers[Types.Messages.HP] = this.receiveHitPoints;
             this.handlers[Types.Messages.BLINK] = this.receiveBlink;
+            this.handlers[100] = this.receiveDayNightCycle;
         
             this.useBison = false;
             this.enable();
@@ -372,6 +373,15 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             }
         },
         
+        receiveDayNightCycle: function(data) {
+            var cycle = data[1],
+                message = data[2];
+        
+            if(this.daynight_callback) {
+                this.daynight_callback(cycle, message);
+            }
+        },
+        
         onDispatched: function(callback) {
             this.dispatched_callback = callback;
         },
@@ -462,6 +472,10 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
     
         onItemBlink: function(callback) {
             this.blink_callback = callback;
+        },
+        
+        onDayNightCycle: function(callback) {
+            this.daynight_callback = callback;
         },
 
         sendHello: function(player) {
