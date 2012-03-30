@@ -1065,6 +1065,11 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
                     self.invincible_callback();
                     self.player.switchArmor(self.sprites["firefox"]);
                 });
+                
+                self.client.onDayNightCycle(function(cycle, message) {
+                    log.info("DayNight is now " + cycle);
+                    self.showNotification(message);
+                });
             
                 self.client.onSpawnItem(function(item, x, y) {
                     log.info("Spawned " + Types.getKindAsString(item.kind) + " (" + item.id + ") at "+x+", "+y);
