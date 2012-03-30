@@ -1067,7 +1067,11 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
                 });
                 
                 self.client.onDayNightCycle(function(cycle, message) {
-                    $('*[data-type="daynight"]').toggleClass('night');
+                    if (cycle == 'day') {
+                        $('*[data-type="daynight"]').removeClass('night');    
+                    } else {
+                        $('*[data-type="daynight"]').addClass('night');    
+                    }                    
                     
                     log.info("DayNight is now " + cycle);
                     self.showNotification(message);
