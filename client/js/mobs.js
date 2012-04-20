@@ -74,6 +74,14 @@ define(['mob', 'timer'], function(Mob, Timer) {
                 this.atkSpeed = 60;
                 this.idleSpeed = 600;
                 this.setAttackRate(700);
+                
+                this.on('engaging', function() {
+                   this.speak('Mmm.. human for dinner!'); 
+                });
+                
+                this.on('disengaging', function() {
+                    this.speak('Cowardice is green!');
+                });
             }
         }),
 
@@ -116,13 +124,26 @@ define(['mob', 'timer'], function(Mob, Timer) {
         }),
 
         Bat: Mob.extend({
-            init: function(id) {
+            init: function(id) {                
+                var self = this;
+                
                 this._super(id, Types.Entities.BAT);
                 this.moveSpeed = 120;
                 this.atkSpeed = 90;
                 this.idleSpeed = 90;
                 this.walkSpeed = 85;
                 this.isAggressive = false;
+                
+                eve.on('cycle.day', function() {
+                    self.moveSpeed = 120;
+                    self.isAggressive = false;
+                });
+                
+                eve.on('cycle.night', function() {
+                   self.moveSpeed = 60;
+                   self.isAggressive = true;
+                   self.aggroRange = 4; 
+                });
             }
         }),
 

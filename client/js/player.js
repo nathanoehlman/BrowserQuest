@@ -5,6 +5,7 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
         MAX_LEVEL: 10,
     
         init: function(id, name, kind) {
+            var self = this;
             this._super(id, kind);
         
             this.name = name;
@@ -19,6 +20,11 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
             // modes
             this.isLootMoving = false;
             this.isSwitchingWeapon = true;
+            
+            eve.on('cycle.night', function() {
+                self.speak('Eep!');
+            });
+            
         },
     
         loot: function(item) {

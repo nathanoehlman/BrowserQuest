@@ -367,6 +367,7 @@ module.exports = World = cls.Class.extend({
     },
     
     addMob: function(mob) {
+        mob.onMove(this.onMobMoveCallback.bind(this));
         this.addEntity(mob);
         this.mobs[mob.id] = mob;
     },
@@ -483,17 +484,28 @@ module.exports = World = cls.Class.extend({
     
     chooseMobTarget: function(mob, hateRank) {
         var player = this.getEntityById(mob.getHatedPlayerId(hateRank));
+        this.setMobTarget(mob, player);
+    },
+    
+    /**
+      Sets and broadcast's a mob's target
+     **/
+    setMobTarget: function(mob, target) {
+        
+        console.log('setting mob target');
         
         // If the mob is not already attacking the player, create an attack link between them.
-        if(player && !(mob.id in player.attackers)) {
+        if(target && !(mob.id in target.attackers)) {
+            
             this.clearMobAggroLink(mob);
             
-            player.addAttacker(mob);
-            mob.setTarget(player);
+            target.addAttacker(mob);
+            mob.setTarget(target);
             
             this.broadcastAttacker(mob);
-            log.debug(mob.id + " is now attacking " + player.id);
+            console.log(mob.id + " is now attacking " + target.id);
         }
+        
     },
     
     onEntityAttack: function(callback) {

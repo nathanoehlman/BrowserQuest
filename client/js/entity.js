@@ -252,7 +252,22 @@ define(function() {
         
         onDirty: function(dirty_callback) {
             this.dirty_callback = dirty_callback;
+        },
+        
+        emit: function(name, args) {
+            console.log('emitting - ' + 'entity.' + this.id + '.' + name);
+            eve('entity.' + this.id + '.' + name, null, args);
+        },
+        
+        on: function(name, handler) {
+            console.log('listening for ' + 'entity.' + this.id + '.' + name);
+            eve.on('entity.' + this.id + '.' + name, handler.bind(this));
+        },
+        
+        speak: function(message) {
+            eve('entity.talk', null, this, message); 
         }
+        
     });
     
     return Entity;

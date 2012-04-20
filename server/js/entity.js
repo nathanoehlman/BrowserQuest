@@ -1,19 +1,23 @@
 
 var cls = require("./lib/class"),
     Messages = require('./message'),
-    Utils = require('./utils');
+    Utils = require('./utils'),
+    events = require('events'),
+    util = require('util');
+    
 
 module.exports = Entity = cls.Class.extend({
     init: function(id, type, kind, x, y) {
         this.id = parseInt(id);
         this.type = type;
         this.kind = kind;
+        this.events = new events.EventEmitter();
         this.x = x;
         this.y = y;
     },
     
     destroy: function() {
-
+        this.events.emit('died');
     },
     
     _getBaseState: function() {
@@ -40,6 +44,8 @@ module.exports = Entity = cls.Class.extend({
     setPosition: function(x, y) {
         this.x = x;
         this.y = y;
+        console.log('entity ' + this.id + ' moved to [' + x + ',' + y + ']');
+        this.events.emit('positioned', x, y);
     },
     
     getPositionNextTo: function(entity) {
@@ -64,3 +70,4 @@ module.exports = Entity = cls.Class.extend({
         return pos;
     }
 });
+// util.inherits(Entity, events.EventEmitter);

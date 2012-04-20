@@ -455,6 +455,15 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
                 log.error("Cannot remove item. Unknown ID : " + item.id);
             }
         },
+        
+        /**
+          Register eve events
+         **/
+        initEvents: function() {
+          
+          eve.on('entity.talk', this.talk.bind(this));
+            
+        },
     
         initPathingGrid: function() {
             this.pathingGrid = [];
@@ -642,6 +651,7 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
                             
                     self.loadAudio();
                     
+                    self.initEvents();
                     self.initMusicAreas();
                     self.initAchievements();
                     self.initCursors();
@@ -1067,8 +1077,9 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
                 });
                 
                 self.client.onDayNightCycle(function(cycle, message) {
+                    eve('cycle.' + cycle);
                     if (cycle == 'day') {
-                        $('*[data-type="daynight"]').removeClass('night');    
+                        $('*[data-type="daynight"]').removeClass('night');                        
                     } else {
                         $('*[data-type="daynight"]').addClass('night');    
                     }                    
@@ -1624,19 +1635,28 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
         
             if(npc) {
                 msg = npc.talk();
-                this.previousClickPosition = {};
-                if(msg) {
-                    this.createBubble(npc.id, msg);
-                    this.assignBubbleTo(npc);
-                    this.audioManager.playSound("npc");
-                } else {
-                    this.destroyBubble(npc.id);
-                    this.audioManager.playSound("npc-end");
-                }
+                this.talk(npc, msg);
                 this.tryUnlockingAchievement("SMALL_TALK");
                 
                 if(npc.kind === Types.Entities.RICK) {
                     this.tryUnlockingAchievement("RICKROLLD");
+                }
+            }
+        },
+        
+        talk: function(entity, msg) {
+            
+            console.log('Talk - ' + msg);
+            console.log(entity.id);
+            if (entity) {
+                this.previousClickPosition = {};
+                if(msg) {
+                    this.createBubble(entity.id, msg);
+                    this.assignBubbleTo(entity);
+                    this.audioManager.playSound("npc");
+                } else {
+                    this.destroyBubble(entity.id);
+                    this.audioManager.playSound("npc-end");
                 }
             }
         },

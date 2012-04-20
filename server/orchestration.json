@@ -13,6 +13,28 @@
                     "night": ["A sudden chill quiets the world - night has fallen", "And with the blackening of the sun, evening has come"]
                 }
             }
+        },
+        {
+            "type": "towndefence",
+            "config": {
+                "enabled": true,
+                "waves": [
+                    {
+                        "monsters": {
+                            "bat": 5
+                        },
+                        "spawnAt": [{"x": 31, "y": 234}]
+                    },
+                    {
+                        "monsters": {
+                            "bat": 5,
+                            "rat": 5
+                        },
+                        "spawnAt": [{"x": 43, "y": 144}]
+                    }
+                ],
+                "timeBetweenWaves": 5000
+            }
         }
     ]
 }

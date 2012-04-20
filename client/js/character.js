@@ -29,6 +29,7 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
     		this.target = null;
             this.unconfirmedTarget = null;
             this.attackers = {};
+            this.numAttackers = 0;
         
             // Health
             this.hitPoints = 0;
@@ -349,12 +350,14 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
             this.attackingMode = true;
             this.setTarget(character);
             this.follow(character);
+            this.emit('engaging');
         },
     
         disengage: function() {
             this.attackingMode = false;
             this.followingMode = false;
             this.removeTarget();
+            this.emit('disengaging');
         },
     
         /**
@@ -405,6 +408,12 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
         addAttacker: function(character) {
             if(!this.isAttackedBy(character)) {
                 this.attackers[character.id] = character;
+                console.log('Add attacker - ' + this.numAttackers);
+                if (this.numAttackers == 0) {
+                    this.emit('attacked');
+                }
+                this.numAttackers++;
+
             } else {
                 log.error(this.id + " is already attacked by " + character.id);
             }
@@ -417,6 +426,7 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
         removeAttacker: function(character) {
             if(this.isAttackedBy(character)) {
                 delete this.attackers[character.id];
+                this.numAttackers--;
             } else {
                 log.error(this.id + " is not attacked by " + character.id);
             }
