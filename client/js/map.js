@@ -185,7 +185,7 @@ define(['jquery', 'area'], function($, Area) {
             if(this.isOutOfBounds(x, y) || !this.plateauGrid) {
                 return false;
             }
-            return (this.plateauGrid[y][x] === 1);
+            return (this.plateauGrid[Math.round(y)][Math.round(x)] === 1);
         },
         
         _generateCollisionGrid: function() {

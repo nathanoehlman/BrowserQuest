@@ -54,8 +54,10 @@ module.exports = World = cls.Class.extend({
         this.onPlayerConnect(function(player) {
             player.onRequestPosition(function() {
                 if(player.lastCheckpoint) {
+                    console.log('last checkpoint');
                     return player.lastCheckpoint.getRandomPosition();
                 } else {
+                    console.log('random');
                     return self.map.getRandomStartingPosition();
                 }
             });

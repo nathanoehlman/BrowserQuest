@@ -15,7 +15,7 @@ function main(config, orchestrationConfig) {
         orchestrators = [],
         lastTotalPlayers = 0,
         checkPopulationInterval = setInterval(function() {
-            if(metrics.isReady) {
+            if(metrics && metrics.isReady) {
                 metrics.getTotalPlayers(function(totalPlayers) {
                     if(totalPlayers !== lastTotalPlayers) {
                         lastTotalPlayers = totalPlayers;
@@ -46,7 +46,7 @@ function main(config, orchestrationConfig) {
                 }
             };
         
-        if(config.metrics_enabled) {
+        if(metrics) {
             metrics.getOpenWorldCount(function(open_world_count) {
                 // choose the least populated world among open worlds
                 world = _.min(_.first(worlds, open_world_count), function(w) { return w.playerCount; });
